@@ -1,133 +1,193 @@
-= RSR template repo - see RSR_OUTLINE.adoc in root for general background and specification
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= ZeroProb.jl
+Jonathan D. A. Jewell <jonathan.jewell@open.ac.uk>
+:toc:
 
-== This is your repo - don't forget to rename me!
+== Overview
 
-== ABI/FFI Standards (Hyperpolymath Universal Standard)
+**ZeroProb.jl** is a Julia library for handling zero-probability events in continuous probability spaces.
 
-**All repos with foreign function interfaces MUST follow this standard:**
+> In continuous probability distributions, events with measure zero can still occur. This library provides rigorous mathematical tools for reasoning about such events.
 
-* **ABI (Application Binary Interface)** → **Idris2** (`src/abi/*.idr`)
-** Type definitions with dependent type proofs
-** Memory layout verification
-** Platform-specific ABIs with compile-time selection
-** Formal verification of interface correctness
+== The Zero-Probability Paradox
 
-* **FFI (Foreign Function Interface)** → **Zig** (`ffi/zig/src/*.zig`)
-** C-compatible function implementations
-** Zero-cost abstractions
-** Memory-safe by default
-** Cross-compilation support
+In continuous probability theory, individual points have measure zero (P(X = x) = 0), yet one such point must occur when sampling. This creates a paradox:
 
-* **Generated C Headers** → Auto-generated from Idris2 ABI (`generated/abi/*.h`)
-** Bridge between Idris2 and Zig
-** Consumed by any language via C ABI
+* **Probability:** P(X = 3.14159...) = 0
+* **Reality:** X can equal exactly 3.14159...
+* **Problem:** How do we reason about relevance when probability is always zero?
 
-**Directory Structure:**
+== Solution: Alternative Relevance Measures
+
+ZeroProb.jl provides three complementary approaches:
+
+=== 1. Density Ratio
+Compare probability densities instead of probabilities:
+
+[source,julia]
 ----
-project/
-├── src/abi/          # Idris2 ABI definitions (REQUIRED)
-├── ffi/zig/          # Zig FFI implementation (REQUIRED)
-├── generated/abi/    # Auto-generated C headers
-└── bindings/         # Language-specific wrappers (optional)
-----
-
-**See:** `ABI-FFI-README.md` for complete documentation
-
-== AI Gatekeeper Protocol (MANDATORY)
-
-**CRITICAL:** All hyperpolymath repos MUST include an AI manifest.
-
-* **File:** `0-AI-MANIFEST.a2ml` (included in this template)
-* **Purpose:** Universal entry point for ALL AI agents (Claude, Gemini, OpenAI, etc.)
-* **Location:** Repository root (alphabetically first)
-* **Customize:** Update `[YOUR-REPO-NAME]` placeholders and repository structure section
-
-**The manifest declares:**
-
-* Canonical file locations (e.g., "SCM files ONLY in `.machine_readable/`")
-* Critical invariants (rules that must NEVER be violated)
-* Repository structure and organization
-* Lifecycle hooks (on-enter, on-exit) for session logging
-
-**Benefits:**
-
-* ✅ Prevents duplicate file errors (e.g., SCM files in wrong locations)
-* ✅ Context preserved across sessions and AI platforms
-* ✅ No repeated explanations - mechanical enforcement
-* ✅ Works universally (not just Claude)
-
-**See:** link:https://github.com/hyperpolymath/0-ai-gatekeeper-protocol[AI Gatekeeper Protocol] for details
-
-**Enforcement:**
-
-* MCP server (mcp-repo-guardian) - Hard enforcement for Claude
-* FUSE wrapper (repo-guardian-fs) - Universal enforcement (coming soon)
-* CI/CD validation - Continuous compliance checking
-
-== AI CLI standards
-
-- **FIRST:** Customize `0-AI-MANIFEST.a2ml` for your repo before any other work
-- Include `ai-cli-crash-capture/` and `contractiles/` from this template in new repos.
-- Mirror 6SCM files into `.machine_readable/` (NOT `.machine_readable/6scm/`).
-- Before any code generation, check `/var/mnt/eclipse/repos/proven` for the current Idris "unbreakable" library status.
-- If a project uses that Idris library, add an *Idris Inside* badge to the repo.
-- If new bindings are required, add them in `/var/mnt/eclipse/repos/proven` as `idris2-zig-<language>` during the work.
-- If new code suggests additional "unbreakable" Idris modules, add them under `/var/mnt/eclipse/repos/proven` and update binders across all supported languages.
-
-== Standard Dependencies
-
-=== Web Projects
-
-ReScript web projects in the hyperpolymath ecosystem **MUST** use these formally verified components:
-
-[cols="1,2,1"]
-|===
-|Library |Purpose |Status
-
-|link:https://github.com/hyperpolymath/rescript-dom-mounter[rescript-dom-mounter]
-|Formally verified DOM mounting
-|**REQUIRED**
-
-|link:https://github.com/hyperpolymath/rescript-tea[rescript-tea]
-|TEA architecture framework
-|Recommended
-
-|link:https://github.com/hyperpolymath/cadre-tea-router[cadre-tea-router]
-|Proven-safe URL routing
-|Recommended
-
-|link:https://github.com/hyperpolymath/proven[proven]
-|Idris2 formally verified library
-|Core Dependency
-|===
-
-==== Why SafeDOM is Required
-
-Traditional DOM mounting can fail:
-
-[source,javascript]
-----
-// ❌ UNSAFE: Can crash with null pointer
-const el = document.getElementById('app')
-el.innerHTML = html  // 💥
+relevance = density_ratio(f, x, baseline)
+# Higher density → more "typical" for the distribution
 ----
 
-SafeDOM provides **compile-time proofs** that DOM operations cannot fail:
+=== 2. Hausdorff Measure
+Use dimensional analysis for sets of measure zero:
 
-[source,rescript]
+[source,julia]
 ----
-// ✅ PROVEN SAFE: Mathematically guaranteed
-SafeDOM.mountSafe("#app", html,
-  ~onSuccess=el => Console.log("Success"),
-  ~onError=err => Console.error(err))
+measure = hausdorff_measure(event_set, dimension)
+# Generalizes volume to fractional dimensions
 ----
 
-**Mathematical Guarantees:**
+=== 3. ε-Neighborhood Probability
+Consider probability mass in small neighborhoods:
 
-✓ No null pointer dereferences (Idris2 proof)
-✓ No invalid CSS selectors (dependent types)
-✓ No malformed HTML (balanced tag checking)
-✓ Type-safe operations (ReScript + Idris2)
-✓ Zero runtime overhead (proofs erased)
+[source,julia]
+----
+prob_ε = epsilon_neighborhood_prob(X, x, ε)
+# P(|X - x| < ε) as ε → 0
+----
 
-See link:https://github.com/hyperpolymath/rescript-dom-mounter[rescript-dom-mounter documentation] for full details.
+== Installation
+
+From Julia REPL:
+
+[source,julia]
+----
+using Pkg
+Pkg.add("ZeroProb")
+----
+
+== Usage Examples
+
+=== Density Ratio Analysis
+
+[source,julia]
+----
+using ZeroProb, Distributions
+
+# Define distribution
+dist = Normal(0, 1)
+
+# Compare relevance of two points
+x1 = 0.0    # At mean
+x2 = 3.0    # 3 standard deviations out
+
+ratio = density_ratio(dist, x1, x2)
+# ratio ≈ 228.0 (x1 is 228× more "typical")
+----
+
+=== Hausdorff Measure for Fractals
+
+[source,julia]
+----
+using ZeroProb
+
+# Cantor set has Hausdorff dimension log(2)/log(3) ≈ 0.631
+cantor_set = construct_cantor_set(iterations=10)
+dimension = hausdorff_dimension(cantor_set)
+measure = hausdorff_measure(cantor_set, dimension)
+
+# Even though Lebesgue measure is 0, Hausdorff measure is non-zero
+----
+
+=== ε-Neighborhood Convergence
+
+[source,julia]
+----
+using ZeroProb, Distributions
+
+dist = Exponential(1.0)
+x = 2.0
+
+# Compute probability in shrinking neighborhoods
+ε_values = [0.1, 0.01, 0.001, 0.0001]
+probs = [epsilon_neighborhood_prob(dist, x, ε) for ε in ε_values]
+
+# Observe convergence rate
+convergence_rate = estimate_convergence_rate(ε_values, probs)
+----
+
+== API Reference
+
+=== Core Functions
+
+`density_ratio(dist, x, baseline)`::
+Compare probability density at `x` to density at `baseline` point.
+
+`hausdorff_measure(set, dimension)`::
+Compute Hausdorff measure of `set` at given `dimension`.
+
+`hausdorff_dimension(set)`::
+Estimate Hausdorff dimension of `set` using box-counting.
+
+`epsilon_neighborhood_prob(dist, x, ε)`::
+Compute P(|X - x| < ε) for distribution `dist`.
+
+`estimate_convergence_rate(ε_values, prob_values)`::
+Estimate rate at which P(|X - x| < ε) → 0 as ε → 0.
+
+=== Mathematical Background
+
+The library implements results from:
+
+* **Measure Theory**: Hausdorff measures generalize Lebesgue measure
+* **Probability Theory**: Density functions as relevance indicators
+* **Fractal Geometry**: Box-counting dimension estimation
+* **Asymptotic Analysis**: Convergence rate estimation
+
+== Integration with ECHIDNA
+
+ZeroProb.jl is designed for use with ECHIDNA's probabilistic reasoning:
+
+* **Premise Selection**: Rank premises by density ratio instead of raw probability
+* **Proof Search**: Use ε-neighborhood probability to guide search
+* **Anomaly Detection**: Flag events far from distribution support using Hausdorff measures
+
+== Development Status
+
+Current Version: **0.1.0** (Initial Release)
+
+* [x] Density ratio implementation
+* [x] Hausdorff measure computation
+* [x] ε-neighborhood probability
+* [x] Basic test suite
+* [ ] Performance optimization
+* [ ] Extended documentation
+* [ ] Integration examples with ECHIDNA
+
+See link:ROADMAP.adoc[ROADMAP.adoc] for future development plans.
+
+== License
+
+Dual licensed under:
+
+* **MIT License** - link:LICENSE-MIT[LICENSE-MIT]
+* **Palimpsest Meta-Project License 1.0** - link:LICENSE-PMPL[LICENSE-PMPL]
+
+Choose either license for use, modification, and distribution.
+
+== Contributing
+
+See link:CONTRIBUTING.md[CONTRIBUTING.md] for contribution guidelines.
+
+== Citation
+
+If you use ZeroProb.jl in research, please cite:
+
+[source,bibtex]
+----
+@software{zeroprob2026,
+  author = {Jewell, Jonathan D.A.},
+  title = {ZeroProb.jl: Zero-Probability Event Analysis},
+  year = {2026},
+  version = {0.1.0},
+  url = {https://github.com/hyperpolymath/ZeroProb.jl}
+}
+----
+
+== Contact
+
+* **Author:** Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+* **GitHub:** https://github.com/hyperpolymath/ZeroProb.jl
+* **Issues:** https://github.com/hyperpolymath/ZeroProb.jl/issues
