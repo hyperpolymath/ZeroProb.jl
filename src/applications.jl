@@ -163,7 +163,7 @@ bet = BettingEdgeCase(
 @assert relevance(ContinuousZeroProbEvent(game, 100.0, :density)) > 0.0
 ```
 """
-struct BettingEdgeCase{T<:Real}
+struct BettingEdgeCase{T<:Real} <: ZeroProbEvent
     distribution::Distribution
     bet_value::T
     payout::Float64
@@ -241,13 +241,32 @@ In practice, you'd verify:
 end
 ```
 """
-function handles_black_swan(model, event::BlackSwanEvent)
-    # Placeholder - in practice, this would:
-    # 1. Generate samples from the tail of event.distribution
-    # 2. Feed them to the model
-    # 3. Verify model doesn't crash and outputs sensible results
+function handles_black_swan(model, event::BlackSwanEvent; num_samples::Int=100)
+    # Use inverse transform sampling to efficiently generate samples from the tail
+    tail_prob = cdf(event.distribution, event.threshold)
+    if tail_prob == 0
+        @warn "The probability of the tail is zero. No samples can be generated."
+        return true # Or false, depending on desired behavior for impossible tails
+    end
 
-    # For now, just return true as a stub
+    for _ in 1:num_samples
+        # Sample a probability from [0, tail_prob]
+        u = rand() * tail_prob
+        # Convert to a value using the quantile function
+        sample = quantile(event.distribution, u)
+
+        try
+            result = model(sample)
+            if result === nothing
+                @warn "Model returned `nothing` for sample $sample"
+                return false
+            end
+        catch e
+            @error "Model crashed on tail sample $sample" exception=(e, catch_backtrace())
+            return false
+        end
+    end
+
     return true
 end
 
@@ -277,7 +296,48 @@ function handles_zero_prob_events(model, event::ZeroProbEvent)
     return handles_zero_prob_event(model, event)
 end
 
-function handles_zero_prob_event(model, event::ZeroProbEvent)
-    # Stub - would actually test the model
-    return true
+function handles_zero_prob_event(model, event::ZeroProbEvent; num_samples::Int=100, ε::Float64=0.01)
+    if event isa BlackSwanEvent
+        return handles_black_swan(model, event; num_samples=num_samples)
+    elseif event isa ContinuousZeroProbEvent || event isa BettingEdgeCase
+        
+        value = if event isa ContinuousZeroProbEvent
+            event.point
+        else
+            event.bet_value
+        end
+
+        # Generate samples from the distribution and test if they fall in the ε-neighborhood
+        samples_in_neighborhood = 0
+        max_tries = num_samples * 1000 
+
+        for _ in 1:max_tries
+            sample = rand(event.distribution)
+            if abs(sample - value) < ε
+                samples_in_neighborhood += 1
+                try
+                    result = model(sample)
+                    if result === nothing
+                        @warn "Model returned `nothing` for sample $sample"
+                        return false
+                    end
+                catch e
+                    @error "Model crashed on sample $sample" exception=(e, catch_backtrace())
+                    return false
+                end
+            end
+            if samples_in_neighborhood >= num_samples
+                break
+            end
+        end
+
+        if samples_in_neighborhood < num_samples
+             @warn "Could not generate enough samples in the ε-neighborhood after $max_tries tries."
+        end
+
+        return true # If no crash, we consider it handled for now
+    else
+        @warn "No specific `handles_zero_prob_event` implementation for type $(typeof(event)). Returning true as a stub."
+        return true
+    end
 end

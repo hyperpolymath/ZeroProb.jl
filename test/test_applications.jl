@@ -49,20 +49,43 @@
     end
 
     @testset "handles_black_swan" begin
-        crash = MarketCrashEvent()
-        model = nothing  # Dummy model
+        crash = MarketCrashEvent(severity = :catastrophic) # threshold = -0.5
 
-        # Stub implementation always returns true
-        @test handles_black_swan(model, crash) == true
+        # A model that works fine
+        model_ok = x -> x
+        @test handles_black_swan(model_ok, crash) == true
+
+        # A model that crashes on tail events
+        model_crash = x -> x <= -0.5 ? error("crash") : x
+        @test handles_black_swan(model_crash, crash) == false
+        
+        # A model that returns nothing
+        model_nothing = x -> nothing
+        @test handles_black_swan(model_nothing, crash) == false
     end
 
     @testset "handles_zero_prob_events" begin
-        events = [
-            ContinuousZeroProbEvent(Normal(0, 1), 0.0),
-            ContinuousZeroProbEvent(Normal(0, 1), 1.0)
-        ]
-        model = nothing  # Dummy model
+        # A model that works fine
+        model_ok = x -> x
 
-        @test handles_zero_prob_events(model, events) == true
+        # Test with ContinuousZeroProbEvent
+        event1 = ContinuousZeroProbEvent(Normal(0, 1), 0.0)
+        @test handles_zero_prob_event(model_ok, event1) == true
+
+        # Test with BettingEdgeCase
+        bet = BettingEdgeCase(Normal(100, 10), 100.0, 1000.0, 1.0)
+        @test handles_zero_prob_event(model_ok, bet) == true
+
+        # A model that crashes around 0.0
+        model_crash = x -> abs(x) < 0.1 ? error("crash") : x
+        @test handles_zero_prob_event(model_crash, event1) == false
+        
+        # A model that returns nothing
+        model_nothing = x -> nothing
+        @test handles_zero_prob_event(model_nothing, event1) == false
+        
+        # Test with a vector of events
+        events = ZeroProbEvent[event1, bet]
+        @test handles_zero_prob_events(model_ok, events) == true
     end
 end

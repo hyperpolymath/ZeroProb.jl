@@ -78,11 +78,13 @@ export probability, relevance, density_ratio, hausdorff_measure,
 
 # Paradoxes
 export continuum_paradox, borel_kolmogorov_paradox,
-       rational_points_paradox, uncountable_union_paradox
+       rational_points_paradox, uncountable_union_paradox,
+       almost_sure_vs_sure
 
 # Applications
 export BlackSwanEvent, MarketCrashEvent, BettingEdgeCase,
-       handles_black_swan, handles_zero_prob_events
+       impact_severity, expected_impact, expected_value,
+       handles_black_swan, handles_zero_prob_events, handles_zero_prob_event
 
 # Visualization
 export plot_zero_probability, plot_continuum_paradox,
