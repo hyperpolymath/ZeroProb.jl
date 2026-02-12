@@ -18,7 +18,10 @@
     (sibling-standard "Axiom.jl" "Broader probability reasoning framework")
     (sibling-standard "Axiology.jl" "Value theory for ML - complementary focus")
     (potential-consumer "ECHIDNA" "May integrate zero-prob reasoning in proof strategies")
-    (inspiration "StatLect" "Based on StatLect probability theory articles"))
+    (inspiration "StatLect" "Based on StatLect probability theory articles")
+    (related "tangle" "Quantum topology connections - anyonic braiding yields zero-probability measurement events")
+    (sibling-standard "KnotTheory.jl" "Knot theory invariants - topological aspects of zero-probability events")
+    (sibling-standard "SMTLib.jl" "SMT solver interface for verifying measure-theoretic properties"))
 
   (what-this-is
     "A Julia library for handling zero-probability events in continuous probability "

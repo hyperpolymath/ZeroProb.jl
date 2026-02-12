@@ -296,48 +296,214 @@ function handles_zero_prob_events(model, event::ZeroProbEvent)
     return handles_zero_prob_event(model, event)
 end
 
-function handles_zero_prob_event(model, event::ZeroProbEvent; num_samples::Int=100, ε::Float64=0.01)
-    if event isa BlackSwanEvent
-        return handles_black_swan(model, event; num_samples=num_samples)
-    elseif event isa ContinuousZeroProbEvent || event isa BettingEdgeCase
-        
-        value = if event isa ContinuousZeroProbEvent
-            event.point
-        else
-            event.bet_value
-        end
+"""
+    handles_zero_prob_event(model, event::ContinuousZeroProbEvent; num_samples, ε) -> Bool
 
-        # Generate samples from the distribution and test if they fall in the ε-neighborhood
-        samples_in_neighborhood = 0
-        max_tries = num_samples * 1000 
+Test whether a model properly handles a continuous zero-probability event by generating
+samples near the event's point and verifying the model doesn't crash or return nothing.
 
-        for _ in 1:max_tries
-            sample = rand(event.distribution)
-            if abs(sample - value) < ε
-                samples_in_neighborhood += 1
-                try
-                    result = model(sample)
-                    if result === nothing
-                        @warn "Model returned `nothing` for sample $sample"
-                        return false
-                    end
-                catch e
-                    @error "Model crashed on sample $sample" exception=(e, catch_backtrace())
+Generates samples from the event's distribution that fall within an ε-neighborhood
+of the event's point, then passes them to the model.
+"""
+function handles_zero_prob_event(model, event::ContinuousZeroProbEvent;
+                                  num_samples::Int=100, ε::Float64=0.01)
+    value = event.point
+
+    samples_in_neighborhood = 0
+    max_tries = num_samples * 1000
+
+    for _ in 1:max_tries
+        sample = rand(event.distribution)
+        if abs(sample - value) < ε
+            samples_in_neighborhood += 1
+            try
+                result = model(sample)
+                if result === nothing
+                    @warn "Model returned `nothing` for sample $sample"
                     return false
                 end
-            end
-            if samples_in_neighborhood >= num_samples
-                break
+            catch e
+                @error "Model crashed on sample $sample" exception=(e, catch_backtrace())
+                return false
             end
         end
-
-        if samples_in_neighborhood < num_samples
-             @warn "Could not generate enough samples in the ε-neighborhood after $max_tries tries."
+        if samples_in_neighborhood >= num_samples
+            break
         end
+    end
 
-        return true # If no crash, we consider it handled for now
-    else
-        @warn "No specific `handles_zero_prob_event` implementation for type $(typeof(event)). Returning true as a stub."
+    if samples_in_neighborhood < num_samples
+        @warn "Could not generate enough samples in the ε-neighborhood after $max_tries tries."
+    end
+
+    return true
+end
+
+"""
+    handles_zero_prob_event(model, event::BettingEdgeCase; num_samples, ε) -> Bool
+
+Test whether a model properly handles a betting edge case by generating samples near
+the bet value and verifying the model doesn't crash or return nothing.
+"""
+function handles_zero_prob_event(model, event::BettingEdgeCase;
+                                  num_samples::Int=100, ε::Float64=0.01)
+    value = event.bet_value
+
+    samples_in_neighborhood = 0
+    max_tries = num_samples * 1000
+
+    for _ in 1:max_tries
+        sample = rand(event.distribution)
+        if abs(sample - value) < ε
+            samples_in_neighborhood += 1
+            try
+                result = model(sample)
+                if result === nothing
+                    @warn "Model returned `nothing` for sample $sample"
+                    return false
+                end
+            catch e
+                @error "Model crashed on sample $sample" exception=(e, catch_backtrace())
+                return false
+            end
+        end
+        if samples_in_neighborhood >= num_samples
+            break
+        end
+    end
+
+    if samples_in_neighborhood < num_samples
+        @warn "Could not generate enough samples in the ε-neighborhood after $max_tries tries."
+    end
+
+    return true
+end
+
+"""
+    handles_zero_prob_event(model, event::BlackSwanEvent; num_samples, ε) -> Bool
+
+Test whether a model properly handles a black swan event by delegating to `handles_black_swan`.
+"""
+function handles_zero_prob_event(model, event::BlackSwanEvent;
+                                  num_samples::Int=100, ε::Float64=0.01)
+    return handles_black_swan(model, event; num_samples=num_samples)
+end
+
+"""
+    handles_zero_prob_event(model, event::TailRiskEvent; num_samples, ε) -> Bool
+
+Test whether a model properly handles a tail risk event by generating samples from
+the extreme tail of the distribution and verifying the model doesn't crash.
+"""
+function handles_zero_prob_event(model, event::TailRiskEvent;
+                                  num_samples::Int=100, ε::Float64=0.01)
+    dist = event.distribution
+    threshold = event.threshold
+
+    # Generate samples beyond the threshold using inverse transform sampling
+    tail_prob = 1.0 - cdf(dist, threshold)
+    if tail_prob < 1e-300
+        @warn "Tail probability is effectively zero; cannot generate tail samples."
         return true
     end
+
+    for _ in 1:num_samples
+        # Sample uniformly from the tail region [threshold, inf)
+        u = cdf(dist, threshold) + rand() * tail_prob
+        sample = quantile(dist, min(u, 1.0 - 1e-15))
+
+        try
+            result = model(sample)
+            if result === nothing
+                @warn "Model returned `nothing` for tail sample $sample"
+                return false
+            end
+        catch e
+            @error "Model crashed on tail sample $sample" exception=(e, catch_backtrace())
+            return false
+        end
+    end
+
+    return true
+end
+
+"""
+    handles_zero_prob_event(model, event::QuantumMeasurementEvent; num_samples, ε) -> Bool
+
+Test whether a model properly handles a quantum measurement event.
+
+Passes the outcome index (as a Float64) to the model for testing.
+"""
+function handles_zero_prob_event(model, event::QuantumMeasurementEvent;
+                                  num_samples::Int=100, ε::Float64=0.01)
+    try
+        result = model(Float64(event.outcome_index))
+        if result === nothing
+            @warn "Model returned `nothing` for quantum measurement outcome $(event.outcome_index)"
+            return false
+        end
+    catch e
+        @error "Model crashed on quantum measurement outcome $(event.outcome_index)" exception=(e, catch_backtrace())
+        return false
+    end
+    return true
+end
+
+"""
+    handles_zero_prob_event(model, event::InsuranceCatastropheEvent; num_samples, ε) -> Bool
+
+Test whether a model properly handles an insurance catastrophe event by generating
+loss samples that exceed the catastrophe threshold.
+"""
+function handles_zero_prob_event(model, event::InsuranceCatastropheEvent;
+                                  num_samples::Int=100, ε::Float64=0.01)
+    dist = event.distribution
+    threshold = event.loss_threshold
+
+    tail_prob = 1.0 - cdf(dist, threshold)
+    if tail_prob < 1e-300
+        @warn "Catastrophe tail probability is effectively zero."
+        return true
+    end
+
+    for _ in 1:num_samples
+        u = cdf(dist, threshold) + rand() * tail_prob
+        sample = quantile(dist, min(u, 1.0 - 1e-15))
+
+        try
+            result = model(sample)
+            if result === nothing
+                @warn "Model returned `nothing` for catastrophe loss sample $sample"
+                return false
+            end
+        catch e
+            @error "Model crashed on catastrophe loss sample $sample" exception=(e, catch_backtrace())
+            return false
+        end
+    end
+
+    return true
+end
+
+"""
+    handles_zero_prob_event(model, event::DiscreteZeroProbEvent; num_samples, ε) -> Bool
+
+Test whether a model properly handles a discrete zero-probability event.
+
+Passes the event's point value to the model directly since discrete events
+have a specific identifiable point.
+"""
+function handles_zero_prob_event(model, event::DiscreteZeroProbEvent;
+                                  num_samples::Int=100, ε::Float64=0.01)
+    try
+        result = model(event.point)
+        if result === nothing
+            @warn "Model returned `nothing` for discrete event point $(event.point)"
+            return false
+        end
+    catch e
+        @error "Model crashed on discrete event point $(event.point)" exception=(e, catch_backtrace())
+        return false
+    end
+    return true
 end

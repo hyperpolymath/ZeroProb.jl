@@ -5,9 +5,26 @@
 Visualization tools for zero-probability events.
 
 Makes abstract concepts tangible through interactive plots.
+Requires Plots.jl to be loadable; functions degrade gracefully if unavailable.
 """
 
-using Plots
+const _PLOTS_LOADED = Ref(false)
+
+function _ensure_plots()
+    if !_PLOTS_LOADED[]
+        try
+            @eval using Plots
+            _PLOTS_LOADED[] = true
+        catch e
+            error(
+                "Plots.jl is required for visualization functions but could not be loaded. " *
+                "Install it with `using Pkg; Pkg.add(\"Plots\")` and ensure its dependencies are working. " *
+                "Original error: $e"
+            )
+        end
+    end
+    nothing
+end
 
 """
     plot_zero_probability(event::ContinuousZeroProbEvent; kwargs...)
@@ -29,6 +46,7 @@ plot_zero_probability(event)
 """
 function plot_zero_probability(event::ContinuousZeroProbEvent{T};
                                xlims=nothing, title="") where T
+    _ensure_plots()
     dist = event.distribution
     point = event.point
 
@@ -86,6 +104,7 @@ plot_continuum_paradox(Normal(0, 1), num_points=20)
 ```
 """
 function plot_continuum_paradox(dist::Distribution; num_points::Int=10)
+    _ensure_plots()
     # Sample points
     points = rand(dist, num_points)
     sort!(points)
@@ -131,6 +150,7 @@ plot_density_vs_probability(event, ε_max=2.0)
 """
 function plot_density_vs_probability(event::ContinuousZeroProbEvent{T};
                                      ε_max::Float64=1.0) where T
+    _ensure_plots()
     εs = range(0.001, ε_max, length=100)
     probs = [epsilon_neighborhood(event, ε) for ε in εs]
 
@@ -162,6 +182,7 @@ plot_epsilon_neighborhood(event, ε=0.5)
 """
 function plot_epsilon_neighborhood(event::ContinuousZeroProbEvent{T};
                                    ε::Float64=0.1) where T
+    _ensure_plots()
     dist = event.distribution
     point = event.point
 
@@ -214,6 +235,7 @@ plot_black_swan_impact(crash, samples=10000)
 ```
 """
 function plot_black_swan_impact(event::BlackSwanEvent; samples::Int=10000)
+    _ensure_plots()
     dist = event.distribution
     threshold = event.threshold
 

@@ -67,19 +67,36 @@ module ZeroProb
 
 using Distributions
 using StatsBase
+using LinearAlgebra
 
 # Core types
 export ZeroProbEvent, ContinuousZeroProbEvent, DiscreteZeroProbEvent,
        AlmostSureEvent, SureEvent
 
+# Extended types (Phase 2)
+export TailRiskEvent, QuantumMeasurementEvent, InsuranceCatastropheEvent
+
 # Measures
 export probability, relevance, density_ratio, hausdorff_measure,
        epsilon_neighborhood, relevance_score
+
+# Extended measures (Phase 1 + Phase 3 + Phase 5)
+export hausdorff_dimension, estimate_convergence_rate,
+       epsilon_neighborhood_prob
+export conditional_density, radon_nikodym_derivative
+export total_variation_distance, kl_divergence
+export fisher_information, entropy_contribution
+export almost_surely, measure_zero_test
 
 # Paradoxes
 export continuum_paradox, borel_kolmogorov_paradox,
        rational_points_paradox, uncountable_union_paradox,
        almost_sure_vs_sure
+
+# Extended paradoxes (Phase 1 + Phase 4)
+export construct_cantor_set
+export banach_tarski_paradox, vitali_set_paradox
+export gabriels_horn_paradox, bertrand_paradox, buffon_needle_problem
 
 # Applications
 export BlackSwanEvent, MarketCrashEvent, BettingEdgeCase,
