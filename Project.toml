@@ -5,17 +5,13 @@ authors = ["Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>"]
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
-Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
-Zstd_jll = "3161d3a3-bdf6-5164-811a-617609db77b4"
 
 [compat]
 Distributions = "0.25"
-Makie = "0.20"
 Plots = "1.39"
 StatsBase = "0.34"
-Zstd_jll = "1.5.7"
 julia = "1.9"
 
 [extras]

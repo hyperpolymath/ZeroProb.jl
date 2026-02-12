@@ -17,51 +17,77 @@
     (tech-stack (julia distributions statistics visualization)))
 
   (current-position
-    (phase "complete")
-    (overall-completion 100)
+    (phase "implementation")
+    (overall-completion 68)
     (components
-      (types "Core type system for zero-prob events")
-      (measures "Density ratio, Hausdorff, epsilon-neighborhood")
-      (paradoxes "Continuum, Borel-Kolmogorov paradoxes")
-      (applications "Black swan events, market crashes")
-      (visualization "Plotting utilities"))
+      (types "Core type system for zero-prob events - WORKING")
+      (measures "Density ratio, epsilon-neighborhood working; Hausdorff trivial (dims 0,1 only)")
+      (paradoxes "Continuum, Borel-Kolmogorov paradoxes - WORKING")
+      (applications "Black swan events, market crashes - WORKING")
+      (visualization "Basic plotting working; plot_black_swan_impact now exported"))
     (working-features
-      "ContinuousZeroProbEvent type system"
-      "Alternative relevance measures"
+      "ContinuousZeroProbEvent and DiscreteZeroProbEvent types"
+      "density_ratio and epsilon_neighborhood measures"
       "Pedagogical paradox examples"
       "Black swan event modeling"
-      "Comprehensive test suite"))
+      "plot_black_swan_impact now exported"
+      "Removed phantom dependencies (Makie, Zstd_jll)")
+    (missing-features
+      "4 README-advertised functions unimplemented"
+      "DiscreteZeroProbEvent missing relevance() dispatch"
+      "handles_zero_prob_event has stub fallthrough"
+      "hausdorff_measure only handles dims 0 and 1"
+      "Visualization tests missing"))
 
   (route-to-mvp
     (milestones
       ((name "Core Implementation")
-       (status "complete")
-       (completion 100)
+       (status "in-progress")
+       (completion 68)
        (items
          ("Type system" . done)
-         ("Relevance measures" . done)
+         ("Basic relevance measures" . done)
+         ("Hausdorff measure (non-trivial)" . pending)
          ("Paradox examples" . done)
          ("Applications" . done)
-         ("Tests" . done)))))
+         ("Missing function implementations" . pending)
+         ("Visualization tests" . pending)
+         ("Tests for core features" . done)))))
 
   (blockers-and-issues
-    (critical ())
-    (high ())
-    (medium ())
-    (low ()))
+    (critical
+      "4 missing functions (README advertises but not implemented)"
+      "DiscreteZeroProbEvent missing relevance() dispatch")
+    (high
+      "handles_zero_prob_event stub returns true unconditionally"
+      "hausdorff_measure only handles trivial cases (dims 0,1)")
+    (medium
+      "Visualization tests missing"
+      "Examples directory had bogus ReScript/Deno files (now fixed)")
+    (low
+      "AGPL license headers in some files (now fixed)"))
 
   (critical-next-actions
     (immediate
+      "Implement 4 missing README-advertised functions"
+      "Add relevance() dispatch for DiscreteZeroProbEvent"
+      "Fix handles_zero_prob_event stub fallthrough"
+      "Implement non-trivial hausdorff_measure")
+    (short-term
+      "Add visualization tests"
       "Expand documentation with more examples"
       "Add integration with Axiom.jl ecosystem")
-    (this-week
+    (long-term
       "Performance benchmarks"
-      "Additional paradox examples")
-    (this-month
       "Research paper integration"
       "Extended applications library"))
 
-  (session-history ()))
+  (session-history
+    ((date . "2026-02-12")
+     (agent . "Claude Sonnet 4.5")
+     (summary . "Fixed template issues: removed bogus examples, fixed AGPL headers, removed phantom deps, exported plot_black_swan_impact, corrected STATE.scm")
+     (tasks-completed . "3 5 7 8 10-partial")
+     (completion-delta . +6))))
 
 ;; Helper functions
 (define (get-completion-percentage state)

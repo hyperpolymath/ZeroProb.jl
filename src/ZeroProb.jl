@@ -88,7 +88,8 @@ export BlackSwanEvent, MarketCrashEvent, BettingEdgeCase,
 
 # Visualization
 export plot_zero_probability, plot_continuum_paradox,
-       plot_density_vs_probability, plot_epsilon_neighborhood
+       plot_density_vs_probability, plot_epsilon_neighborhood,
+       plot_black_swan_impact
 
 # Include submodules
 include("types.jl")
