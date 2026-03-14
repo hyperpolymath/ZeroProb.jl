@@ -189,7 +189,7 @@ The visualization module `using Plots` at the top of `visualization.jl`, but Plo
 **What to do:**
 Create `test/test_visualization.jl`:
 ```julia
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 
 using Plots
 
@@ -343,7 +343,7 @@ These are leftover RSR template files. A Julia probability library should have J
    - BettingEdgeCase expected value computation
 
 Both files must have:
-- `# SPDX-License-Identifier: PMPL-1.0-or-later` header
+- `# SPDX-License-Identifier: MPL-2.0` header
 - `# Copyright (c) 2026 Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>`
 - Comments explaining each step
 - Must be runnable: `julia --project=.. examples/basic_usage.jl`

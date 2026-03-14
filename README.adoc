@@ -1,6 +1,6 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 = ZeroProb.jl
-Jonathan D. A. Jewell <jonathan.jewell@open.ac.uk>
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 :toc:
 
 image:https://img.shields.io/badge/Project-Topology-9558B2[Topology,link="TOPOLOGY.md"]
@@ -298,6 +298,6 @@ If you use ZeroProb.jl in research, please cite:
 
 == Contact
 
-* **Author:** Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+* **Author:** Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 * **GitHub:** https://github.com/hyperpolymath/ZeroProb.jl
 * **Issues:** https://github.com/hyperpolymath/ZeroProb.jl/issues

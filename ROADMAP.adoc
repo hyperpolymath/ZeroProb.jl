@@ -1,6 +1,6 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 = ZeroProb.jl Roadmap
-Jonathan D. A. Jewell <jonathan.jewell@open.ac.uk>
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 :toc:
 
 == Current Status (v0.1.0)
@@ -178,5 +178,5 @@ Key papers and texts inspiring this roadmap:
 
 Questions or suggestions? Open an issue or contact:
 
-* **Jonathan D.A. Jewell** <jonathan.jewell@open.ac.uk>
+* **Jonathan D.A. Jewell** <j.d.a.jewell@open.ac.uk>
 * **GitHub Issues**: https://github.com/hyperpolymath/ZeroProb.jl/issues
