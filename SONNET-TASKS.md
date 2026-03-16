@@ -344,7 +344,7 @@ These are leftover RSR template files. A Julia probability library should have J
 
 Both files must have:
 - `# SPDX-License-Identifier: MPL-2.0` header
-- `# Copyright (c) 2026 Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>`
+- `# Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>`
 - Comments explaining each step
 - Must be runnable: `julia --project=.. examples/basic_usage.jl`
 
