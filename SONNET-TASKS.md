@@ -361,11 +361,11 @@ Both should run without error and produce output.
 ## TASK 8: Fix AGPL license headers in template files
 
 **Files:**
-- `/var/mnt/eclipse/repos/ZeroProb.jl/.gitignore` (line 1: `# SPDX-License-Identifier: AGPL-3.0-or-later`)
-- `/var/mnt/eclipse/repos/ZeroProb.jl/.gitattributes` (line 1: `# SPDX-License-Identifier: AGPL-3.0-or-later`)
-- `/var/mnt/eclipse/repos/ZeroProb.jl/ffi/zig/build.zig` (line 2: `// SPDX-License-Identifier: AGPL-3.0-or-later`)
-- `/var/mnt/eclipse/repos/ZeroProb.jl/ffi/zig/src/main.zig` (line 6: `// SPDX-License-Identifier: AGPL-3.0-or-later`)
-- `/var/mnt/eclipse/repos/ZeroProb.jl/ffi/zig/test/integration_test.zig` (line 2: `// SPDX-License-Identifier: AGPL-3.0-or-later`)
+- `/var/mnt/eclipse/repos/ZeroProb.jl/.gitignore` (line 1: `# SPDX-License-Identifier: PMPL-1.0-or-later`)
+- `/var/mnt/eclipse/repos/ZeroProb.jl/.gitattributes` (line 1: `# SPDX-License-Identifier: PMPL-1.0-or-later`)
+- `/var/mnt/eclipse/repos/ZeroProb.jl/ffi/zig/build.zig` (line 2: `// SPDX-License-Identifier: PMPL-1.0-or-later`)
+- `/var/mnt/eclipse/repos/ZeroProb.jl/ffi/zig/src/main.zig` (line 6: `// SPDX-License-Identifier: PMPL-1.0-or-later`)
+- `/var/mnt/eclipse/repos/ZeroProb.jl/ffi/zig/test/integration_test.zig` (line 2: `// SPDX-License-Identifier: PMPL-1.0-or-later`)
 - `/var/mnt/eclipse/repos/ZeroProb.jl/docs/CITATIONS.adoc` (line 13: `license = {AGPL-3.0-or-later}`)
 - `/var/mnt/eclipse/repos/ZeroProb.jl/RSR_OUTLINE.adoc` (lines 72, 160 mention AGPL)
 
