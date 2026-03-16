@@ -366,14 +366,14 @@ Both should run without error and produce output.
 - `/var/mnt/eclipse/repos/ZeroProb.jl/ffi/zig/build.zig` (line 2: `// SPDX-License-Identifier: PMPL-1.0-or-later`)
 - `/var/mnt/eclipse/repos/ZeroProb.jl/ffi/zig/src/main.zig` (line 6: `// SPDX-License-Identifier: PMPL-1.0-or-later`)
 - `/var/mnt/eclipse/repos/ZeroProb.jl/ffi/zig/test/integration_test.zig` (line 2: `// SPDX-License-Identifier: PMPL-1.0-or-later`)
-- `/var/mnt/eclipse/repos/ZeroProb.jl/docs/CITATIONS.adoc` (line 13: `license = {AGPL-3.0-or-later}`)
+- `/var/mnt/eclipse/repos/ZeroProb.jl/docs/CITATIONS.adoc` (line 13: `license = {PMPL-1.0-or-later}`)
 - `/var/mnt/eclipse/repos/ZeroProb.jl/RSR_OUTLINE.adoc` (lines 72, 160 mention AGPL)
 
 **Problem:**
 Per CLAUDE.md, AGPL-3.0 is the OLD license and must NEVER be used. All hyperpolymath original code must use `PMPL-1.0-or-later`. These are leftover RSR template headers that were never updated.
 
 **What to do:**
-Replace `AGPL-3.0-or-later` with `PMPL-1.0-or-later` in all files listed above.
+Replace `PMPL-1.0-or-later` with `PMPL-1.0-or-later` in all files listed above.
 
 For `docs/CITATIONS.adoc`, also fix the author from `Polymath, Hyper` to `Jewell, Jonathan D.A.`, the title from `RSR-template-repo` to `ZeroProb.jl`, the year from `2025` to `2026`, and the URL to `https://github.com/hyperpolymath/ZeroProb.jl`.
 
