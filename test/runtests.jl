@@ -21,4 +21,9 @@ using LinearAlgebra
 
     # Coverage gap tests (display methods, relevance_score, extended type handlers)
     include("test_coverage_gaps.jl")
+
+    # CRG Grade C tests
+    include("e2e_test.jl")
+    include("property_test.jl")
+
 end
