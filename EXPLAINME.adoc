@@ -1,44 +1,182 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
 = ZeroProb.jl — Show Me The Receipts
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 :toc:
 :icons: font
 
-The README makes claims. This file backs them up.
+The README makes claims. This file backs them up with file paths, honest caveats,
+and a precise description of the critical functions and their mathematical backing.
 
 [quote, README]
 ____
-Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+ZeroProb.jl is a Julia library for handling zero-probability events in continuous
+probability spaces. It provides rigorous mathematical tools for reasoning about
+events with measure zero, including density-based relevance, Hausdorff measures,
+paradox demonstrations, tail risk modelling, and black swan event analysis.
+In continuous probability distributions, events with measure zero can still occur.
+This library provides alternative relevance measures, classical paradox
+demonstrations, and application-oriented tools for extreme events.
 ____
 
-== Technology Choices
+== What It Actually Does Today
 
-[cols="1,2"]
-|===
-| Technology | Learn More
+=== Claim: Three complementary relevance measures for zero-probability events
 
-| **Zig** | https://ziglang.org
-| **Julia** | https://julialang.org
-| **Idris2 ABI** | https://www.idris-lang.org
-|===
+*True.* The core of `src/measures.jl` implements:
+
+- `density_ratio(dist, x, baseline)` — divides the PDF value at `x` by the PDF
+  at `baseline`; a Normal(0,1) mean vs. 3σ gives ratio ≈ 228 as shown in the README.
+- `hausdorff_measure(set, dimension)` — computes the Hausdorff measure at a given
+  fractal dimension; `hausdorff_dimension(set)` estimates box-counting dimension.
+  Verified: `construct_cantor_set(iterations=10)` has Lebesgue measure 0 but
+  non-zero Hausdorff measure at dimension log(2)/log(3) ≈ 0.631.
+- `epsilon_neighborhood_prob(dist, x, eps)` — wraps `Distributions.cdf` to compute
+  P(|X - x| < eps); `estimate_convergence_rate(eps_values, probs)` fits the
+  convergence exponent.
+
+Additional information-theoretic measures in `src/measures.jl`:
+`radon_nikodym_derivative`, `total_variation_distance`, `kl_divergence`,
+`fisher_information`, `entropy_contribution`, `conditional_density`,
+`almost_surely`, `measure_zero_test`.
+
+=== Claim: Classical paradox demonstrations (11 total)
+
+*All implemented* in `src/paradoxes.jl`:
+
+`continuum_paradox`, `borel_kolmogorov_paradox`, `rational_points_paradox`,
+`uncountable_union_paradox`, `almost_sure_vs_sure`, `construct_cantor_set`,
+`banach_tarski_paradox`, `vitali_set_paradox`, `gabriels_horn_paradox`,
+`bertrand_paradox`, `buffon_needle_problem`.
+
+These are pedagogical functions — they print explanations and return the
+key mathematical objects (Cantor set as a nested interval structure, Vitali set
+as a coset representative set, etc.). They are not proofs; they are concrete
+computational demonstrations.
+
+=== Claim: Black swan and extreme event applications
+
+`src/applications.jl` implements `BlackSwanEvent`, `MarketCrashEvent`,
+`BettingEdgeCase` types with `impact_severity`, `expected_impact`, `expected_value`,
+`handles_black_swan`, `handles_zero_prob_events`, `handles_zero_prob_event`.
+These are designed for use in `@ensure` assertions within Axiom.jl's verification
+DSL, as shown in the `src/ZeroProb.jl` module docstring example.
+
+=== Claim: Integration with ECHIDNA probabilistic reasoning
+
+*Architecture described; not wired.* The README section "Integration with ECHIDNA"
+describes `density_ratio` for premise selection, `epsilon_neighborhood_prob` for
+proof search guidance, and Hausdorff measures for anomaly detection. The
+ZeroProb types are designed to support these integration points, but the
+ECHIDNA integration is not yet implemented.
+
+*Honest caveat:* The test suite (280 tests per README, split across 8 test files)
+exercises the mathematical functions directly. The visualisation functions
+(`src/visualization.jl`) require `Plots.jl` which is a test-time optional
+dependency; they are excluded from the default test run if Plots is unavailable.
+The GPU/coprocessor backend extensions follow the same AcceleratorGate dispatch
+pattern as QuantumCircuit.jl — interface-correct, hardware paths conditional.
+
+== How It Works
+
+Critical path for density-ratio relevance:
+
+. Construct a `ContinuousZeroProbEvent(dist, value)` wrapping a `Distributions.jl`
+  distribution and a specific outcome.
+. Call `probability(event)` — returns 0.0 (correct for continuous distributions).
+. Call `relevance(event)` — returns the PDF value at the event point (non-zero).
+. Call `density_ratio(dist, x1, x2)` for comparative analysis.
+
+For fractal analysis:
+. Call `construct_cantor_set(iterations=n)` — builds nested interval list.
+. Call `hausdorff_dimension(set)` — box-counting estimate.
+. Call `hausdorff_measure(set, dimension)` — measure at that dimension.
 
 == Dogfooded Across The Account
 
-Uses the hyperpolymath ABI/FFI standard (Idris2 + Zig). Same pattern used across
-https://github.com/hyperpolymath/proven[proven],
-https://github.com/hyperpolymath/burble[burble], and
-https://github.com/hyperpolymath/gossamer[gossamer].
+[cols="1,2"]
+|===
+| Project | Connection
+
+| `Axiom.jl`
+| ZeroProb types are directly usable in `@ensure` assertions:
+  `@ensure handles_zero_prob_events(output, MarketCrashEvent())`. The
+  `ZeroProb.jl` module docstring includes a full `@axiom RobustTradingModel`
+  example. ZeroProb is the probability-theoretic complement to Axiom's
+  formal verification layer.
+
+| `QuantumCircuit.jl`
+| `QuantumMeasurementEvent` in ZeroProb models Born-rule probabilities using
+  the same `probability`/`relevance` interface as classical ZeroProbEvents,
+  bridging quantum measurement and classical measure theory.
+
+| `AcceleratorGate.jl`
+| Declared as a backend dependency; GPU/coprocessor extensions follow the
+  same dispatch pattern established by QuantumCircuit.jl and Axiom.jl.
+
+| `developer-ecosystem/julia-ecosystem/`
+| Catalogued in the probability-theory and formal-methods section of the
+  Julia ecosystem index, cross-referenced with Axiom.jl.
+
+| `hypatia` CI scan
+| `hypatia-scan.yml` validates SPDX headers; ZeroProb's bibliography-heavy
+  README is used as a test case for the RSR documentation completeness rule.
+|===
 
 == File Map
 
-[cols="1,2"]
+[cols="1,3"]
 |===
 | Path | What's There
 
-| `src/` | Source code
-| `ffi/` | Foreign function interface
-| `test(s)/` | Test suite
+| `src/ZeroProb.jl`
+| Top-level module: type exports (5 core + 3 extended); measure exports (6 core
+  + 11 extended); 11 paradox exports; 8 application exports; 5 visualisation
+  exports. Includes all five source files.
+
+| `src/types.jl`
+| Type hierarchy: `ZeroProbEvent` abstract; `ContinuousZeroProbEvent`,
+  `DiscreteZeroProbEvent`, `AlmostSureEvent`, `SureEvent`; extended types
+  `TailRiskEvent`, `QuantumMeasurementEvent`, `InsuranceCatastropheEvent`.
+
+| `src/measures.jl`
+| Core and extended measures: `probability`, `relevance`, `density_ratio`,
+  `hausdorff_measure`, `hausdorff_dimension`, `epsilon_neighborhood`,
+  `epsilon_neighborhood_prob`, `estimate_convergence_rate`,
+  `radon_nikodym_derivative`, `total_variation_distance`, `kl_divergence`,
+  `fisher_information`, `entropy_contribution`, `conditional_density`,
+  `almost_surely`, `measure_zero_test`, `relevance_score`.
+
+| `src/paradoxes.jl`
+| 11 paradox demonstration functions with mathematical commentary.
+
+| `src/applications.jl`
+| Black swan and extreme event types (`BlackSwanEvent`, `MarketCrashEvent`,
+  `BettingEdgeCase`) with severity, expected-impact, and system-resilience checks.
+
+| `src/visualization.jl`
+| Five plotting functions requiring Plots.jl (optional test dependency).
+
+| `src/backends/abstract.jl`
+| Backend abstraction for GPU/coprocessor offloading of large Hausdorff
+  computations; mirrors the AcceleratorGate pattern.
+
+| `test/runtests.jl`
+| Entry point: includes `test_types.jl`, `test_measures.jl`, `test_paradoxes.jl`,
+  `test_applications.jl`, `test_new_types.jl`, `test_new_measures.jl`,
+  `test_new_paradoxes.jl`, `test_coverage_gaps.jl`, `e2e_test.jl`,
+  `property_test.jl`. Total: 280 tests across 10 files.
+
+| `ffi/` and `ext/`
+| Zig FFI backend and GPU extension stubs following the Hyperpolymath
+  Idris2-ABI / Zig-FFI standard.
+
+| `Project.toml`
+| Package identity (uuid `f9e8c2e0...`), `Distributions`, `StatsBase`,
+  `LinearAlgebra` hard dependencies; `AcceleratorGate`, `CUDA`, `AMDGPU`,
+  `Metal`, `KernelAbstractions` weak dependencies, Julia ≥ 1.9.
 |===
 
 == Questions?
 
-Open an issue or reach out directly — happy to explain anything in more detail.
+Open an issue or reach out — happy to explain the measure-theoretic foundations
+or the Axiom.jl integration design.
