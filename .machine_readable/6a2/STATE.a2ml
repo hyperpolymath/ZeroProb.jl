@@ -1,14 +1,46 @@
 # SPDX-License-Identifier: MPL-2.0
 # STATE.a2ml — Project state checkpoint
 # Converted from STATE.scm on 2026-03-15
+# Refreshed: 2026-06-14 (governance conformance — close the 2026-06-13 estate
+#            standardization gap ZeroProb.jl missed; STATE currency was stale
+#            at 2026-03-15 with completion-percentage = 0, which contradicted
+#            the working src/ + 11 test files + full CI on the repo)
 
 [metadata]
 project = "ZeroProb.jl"
 version = "0.1.0"
-last-updated = "2026-03-15"
+last-updated = "2026-06-14"
 status = "active"
 
 [project-context]
 name = "ZeroProb.jl"
-completion-percentage = 0
-phase = "In development"
+completion-percentage = 70   # estimate: core measures/paradoxes/types implemented with a test suite and full CI; pre-1.0 (v0.1.0) with a known dependency-hygiene item (see [known-issues])
+phase = "Pre-1.0 library; core probability/measure/paradox surface implemented, ongoing feature additions"
+
+[build]
+language = "Julia"
+minimum-julia = "1.9"        # Project.toml [compat] julia = "1.9"
+test-command = "julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'"
+test-files = 11              # test/*.jl (runtests + property + e2e + per-area suites)
+ffi-layer = "ffi/zig/ (Zig FFI implementing the Idris2 ABI; ABI-FFI-README.md)"
+
+[components]
+core-source = "src/ZeroProb.jl"
+modules = "src/{measures,paradoxes,types,applications,visualization}.jl; src/backends/abstract.jl"
+extensions = "ext/ (12 weak-dep extensions: CUDA/Metal/ROCm GPU backends + AcceleratorGate-backed accelerator extensions)"
+abi-contract = "ABI-FFI-README.md"
+docs = "docs/ (CITATIONS.adoc, accessibility/, compliance/)"
+
+[known-issues]
+issues = [
+  "Project.toml lists AcceleratorGate (placeholder UUID) in [deps]; it is unregistered and can fail Pkg.instantiate(). Sibling .jl packages removed it in their 2026-06-13 pass; tracked as a follow-up dependency-hygiene fix (not addressed in the 2026-06-14 governance-conformance pass, which is metadata-only).",
+  ".machine_readable/contractiles/Mustfile.a2ml header still reads 'rsr-template-repo' (template residue); flagged for a separate de-branding pass.",
+]
+
+[maintenance-status]
+last-run-utc = "2026-06-14T00:00:00Z"
+last-result = "unknown"  # unknown | pass | warn | fail — no Julia toolchain available in this session to run the suite
+# 2026-06-14 governance-conformance pass: added the net-new estate bot_directives
+# trio (hypatia / gitbot-fleet / git-private-farm) and the flat contractiles
+# Bustfile/Dustfile that ZeroProb.jl missed in the 2026-06-13 wave. Metadata-only;
+# no source or workflow files touched.
