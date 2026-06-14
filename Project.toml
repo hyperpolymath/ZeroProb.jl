@@ -5,12 +5,12 @@ license = "MPL-2.0"
 authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
 
 [deps]
-AcceleratorGate = "59f742c7-270d-4a76-95d4-a853ae16cc71"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [weakdeps]
+# Real packages registered in the Julia General registry:
 AMDGPU = "21141c5a-9bdb-4563-92ae-f87d6854732e"
 CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
 KernelAbstractions = "63c18a36-062a-441e-b654-da1e3ab1ce7c"
@@ -20,18 +20,16 @@ Metal = "dde4c033-4e86-420c-a63e-0dd931031962"
 ZeroProbCUDAExt = ["CUDA", "KernelAbstractions"]
 ZeroProbMetalExt = ["Metal", "KernelAbstractions"]
 ZeroProbROCmExt = ["AMDGPU", "KernelAbstractions"]
-ZeroProbTPUExt = "AcceleratorGate"
-ZeroProbNPUExt = "AcceleratorGate"
-ZeroProbFPGAExt = "AcceleratorGate"
-ZeroProbVPUExt = "AcceleratorGate"
-ZeroProbQPUExt = "AcceleratorGate"
-ZeroProbDSPExt = "AcceleratorGate"
-ZeroProbPPUExt = "AcceleratorGate"
-ZeroProbMathExt = "AcceleratorGate"
-ZeroProbCryptoExt = "AcceleratorGate"
+# Removed: ZeroProbTPUExt, ZeroProbNPUExt, ZeroProbFPGAExt, ZeroProbVPUExt,
+# ZeroProbQPUExt, ZeroProbDSPExt, ZeroProbPPUExt, ZeroProbMathExt,
+# ZeroProbCryptoExt — all were triggered by AcceleratorGate, an unregistered
+# placeholder package (UUID 59f742c7) not in Julia General. It made
+# Pkg.instantiate() fail ("expected package AcceleratorGate to be registered").
+# The corresponding ext/*.jl files are kept as reference stubs but are excluded
+# from the project graph until a real accelerator package is available. This
+# mirrors the 2026-06-13 fix applied to the sibling .jl packages.
 
 [compat]
-AcceleratorGate = "0.1"
 AMDGPU = "1"
 CUDA = "5"
 Distributions = "0.25"
