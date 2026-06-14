@@ -33,14 +33,20 @@ docs = "docs/ (CITATIONS.adoc, accessibility/, compliance/)"
 
 [known-issues]
 issues = [
-  "Project.toml lists AcceleratorGate (placeholder UUID) in [deps]; it is unregistered and can fail Pkg.instantiate(). Sibling .jl packages removed it in their 2026-06-13 pass; tracked as a follow-up dependency-hygiene fix (not addressed in the 2026-06-14 governance-conformance pass, which is metadata-only).",
+  "RESOLVED 2026-06-14: AcceleratorGate (placeholder UUID 59f742c7) removed from Project.toml [deps]/[compat] and its 9 backing extension entries dropped; it was unregistered and failed Pkg.instantiate(). Mirrors the sibling .jl 2026-06-13 fix; the 9 ext/*.jl files are kept as excluded reference stubs.",
   ".machine_readable/contractiles/Mustfile.a2ml header still reads 'rsr-template-repo' (template residue); flagged for a separate de-branding pass.",
 ]
 
 [maintenance-status]
 last-run-utc = "2026-06-14T00:00:00Z"
-last-result = "unknown"  # unknown | pass | warn | fail — no Julia toolchain available in this session to run the suite
-# 2026-06-14 governance-conformance pass: added the net-new estate bot_directives
-# trio (hypatia / gitbot-fleet / git-private-farm) and the flat contractiles
-# Bustfile/Dustfile that ZeroProb.jl missed in the 2026-06-13 wave. Metadata-only;
-# no source or workflow files touched.
+last-result = "unknown"  # unknown | pass | warn | fail — no Julia toolchain locally (installer is proxy-blocked); verification is via the repo's own multi-platform CI on the PR
+# 2026-06-14 conformance pass — closes the full 2026-06-13 estate wave that
+# ZeroProb.jl missed (not just governance metadata):
+#   * bot_directives trio (hypatia / gitbot-fleet / git-private-farm) + flat
+#     contractiles Bustfile/Dustfile
+#   * codeql.yml: language matrix javascript-typescript -> actions (was failing
+#     "no source files" on every run)
+#   * Project.toml: drop unregistered AcceleratorGate (fixes Pkg.instantiate)
+#   * instant-sync.yml: secret presence gate on FARM_DISPATCH_TOKEN + fix a
+#     malformed K9-SVC step (was a list item directly under jobs:)
+#   * mirror.yml: secret presence gates on all 7 forge mirror jobs
