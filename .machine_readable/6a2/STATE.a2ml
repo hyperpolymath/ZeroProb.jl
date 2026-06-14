@@ -34,6 +34,7 @@ docs = "docs/ (CITATIONS.adoc, accessibility/, compliance/)"
 [known-issues]
 issues = [
   "RESOLVED 2026-06-14: AcceleratorGate (placeholder UUID 59f742c7) removed from Project.toml [deps]/[compat] and its 9 backing extension entries dropped; it was unregistered and failed Pkg.instantiate(). Mirrors the sibling .jl 2026-06-13 fix; the 9 ext/*.jl files are kept as excluded reference stubs.",
+  "RESOLVED 2026-06-14 (follow-up): removing AcceleratorGate from [deps] exposed a second failure — src/backends/abstract.jl did `using AcceleratorGate` and is included unconditionally by src/ZeroProb.jl, and src/measures.jl consumes current_backend/JuliaBackend/backend_* from it, so precompile failed with 'Package ZeroProb does not have AcceleratorGate in its dependencies'. Unlike the sibling .jl packages (whose core never referenced the backend layer, so the include was simply removed), ZeroProb's core DOES consume it; the fix makes src/backends/abstract.jl self-contained (local AbstractBackend/JuliaBackend/GPUBackend/CoprocessorBackend hierarchy + current_backend + inlined self-healing fallbacks), so the pure-Julia path is closed under the base package's own deps. The optional ext/ GPU/coprocessor files still reference AcceleratorGate and load only when a real accelerator package is present (never during Pkg.test, whose target is Test/Random/LinearAlgebra).",
   ".machine_readable/contractiles/Mustfile.a2ml header still reads 'rsr-template-repo' (template residue); flagged for a separate de-branding pass.",
 ]
 
