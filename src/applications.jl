@@ -201,20 +201,29 @@ println("Expected value: £\$ev")
 ```
 """
 function expected_value(bet::BettingEdgeCase; method::Symbol=:epsilon, ε::Float64=0.01)
+    # Validate the dispatch method at the function boundary, before constructing
+    # the event. The event's relevance_measure only accepts
+    # :density/:hausdorff/:epsilon, so passing an unknown method through to the
+    # ContinuousZeroProbEvent constructor would raise an AssertionError there and
+    # mask this explicit, typed ErrorException. Both supported methods
+    # (:epsilon, :density) are also valid relevance measures, so the happy paths
+    # are unchanged.
+    if method != :epsilon && method != :density
+        error("Unknown method: $method")
+    end
+
     event = ContinuousZeroProbEvent(bet.distribution, bet.bet_value, method)
 
     if method == :epsilon
         # P(within ε of bet_value) × payout - cost
         p = epsilon_neighborhood(event, ε)
         return p * bet.payout - bet.cost
-    elseif method == :density
+    else  # method == :density
         # Use density as pseudo-probability (heuristic)
         d = density_ratio(event)
         # Normalize by some scale factor (domain-specific)
         pseudo_p = d * ε
         return pseudo_p * bet.payout - bet.cost
-    else
-        error("Unknown method: $method")
     end
 end
 
