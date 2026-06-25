@@ -21,7 +21,7 @@ jobs:
       GITLAB_SSH_KEY: ${{ secrets.GITLAB_SSH_KEY }}
     steps:
       - if: env.GITLAB_SSH_KEY != ''
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
       - if: env.GITLAB_SSH_KEY != ''
@@ -42,7 +42,7 @@ jobs:
       BITBUCKET_SSH_KEY: ${{ secrets.BITBUCKET_SSH_KEY }}
     steps:
       - if: env.BITBUCKET_SSH_KEY != ''
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
       - if: env.BITBUCKET_SSH_KEY != ''
@@ -63,7 +63,7 @@ jobs:
       CODEBERG_SSH_KEY: ${{ secrets.CODEBERG_SSH_KEY }}
     steps:
       - if: env.CODEBERG_SSH_KEY != ''
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
       - if: env.CODEBERG_SSH_KEY != ''
@@ -84,7 +84,7 @@ jobs:
       SOURCEHUT_SSH_KEY: ${{ secrets.SOURCEHUT_SSH_KEY }}
     steps:
       - if: env.SOURCEHUT_SSH_KEY != ''
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
       - if: env.SOURCEHUT_SSH_KEY != ''
@@ -105,7 +105,7 @@ jobs:
       DISROOT_SSH_KEY: ${{ secrets.DISROOT_SSH_KEY }}
     steps:
       - if: env.DISROOT_SSH_KEY != ''
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
       - if: env.DISROOT_SSH_KEY != ''
@@ -126,7 +126,7 @@ jobs:
       GITEA_SSH_KEY: ${{ secrets.GITEA_SSH_KEY }}
     steps:
       - if: env.GITEA_SSH_KEY != ''
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
       - if: env.GITEA_SSH_KEY != ''
@@ -147,12 +147,12 @@ jobs:
       RADICLE_KEY: ${{ secrets.RADICLE_KEY }}
     steps:
       - if: env.RADICLE_KEY != ''
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
       - name: Setup Rust
         if: env.RADICLE_KEY != ''
-        uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # stable
+        uses: dtolnay/rust-toolchain@67ef31d5b988238dd797d409d6f9574278e20537 # stable
         with:
           toolchain: stable
       - name: Install Radicle
