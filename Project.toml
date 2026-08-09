@@ -25,8 +25,10 @@ ZeroProbROCmExt = ["AMDGPU", "KernelAbstractions"]
 # ZeroProbCryptoExt — all were triggered by AcceleratorGate, an unregistered
 # placeholder package (UUID 59f742c7) not in Julia General. It made
 # Pkg.instantiate() fail ("expected package AcceleratorGate to be registered").
-# The corresponding ext/*.jl files are kept as reference stubs but are excluded
-# from the project graph until a real accelerator package is available. This
+# The corresponding ext/*.jl files are excluded from the project graph until
+# AcceleratorGate is registered. ZeroProbTPUExt is now an explicit opt-in CPU
+# simulator adapter for the central operation API; it makes no TPU hardware
+# claim. Other historical files remain unaudited reference stubs. This
 # mirrors the 2026-06-13 fix applied to the sibling .jl packages.
 
 [compat]

@@ -20,7 +20,8 @@ using LinearAlgebra
     include("test_new_paradoxes.jl")
 
     # Coverage gap tests (display methods, relevance_score, extended type handlers)
-    include("test_coverage_gaps.jl")
+include("test_coverage_gaps.jl")
+include("test_accelerator_adapter.jl")
 
     # CRG Grade C tests
     include("e2e_test.jl")
