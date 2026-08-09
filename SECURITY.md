@@ -6,19 +6,11 @@ Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 <!-- 
 ============================================================================
-TEMPLATE INSTRUCTIONS (delete this block before publishing)
+Security contact note
 ============================================================================
-Replace all {{PLACEHOLDER}} values with your information:
-  ZeroProb.Jl     - Your project name
-  hyperpolymath            - GitHub username or org (e.g., hyperpolymath)
-  ZeroProb.jl             - Repository name
-  6759885+hyperpolymath@users.noreply.github.com   - Security contact email
-  [PGP fingerprint not set]  - Your PGP key fingerprint (40 chars, no spaces)
-  {{PGP_KEY_URL}}      - URL to your public PGP key
-  {{WEBSITE}}          - Your website/domain
-  2026     - Current year for copyright
-
-Optional: Remove sections that don't apply (e.g., PGP if you don't use it)
+This policy is maintained for ZeroProb.jl. Reports should use the GitHub
+Security Advisory channel or the contact listed below. No project PGP key is
+currently published.
 ============================================================================
 -->
 
@@ -56,25 +48,26 @@ This method ensures:
 - Coordinated disclosure tooling
 - Automatic credit when the advisory is published
 
-### Alternative: Encrypted Email
+### Alternative: Email
 
-If you cannot use GitHub Security Advisories, you may email us directly:
+If you cannot use GitHub Security Advisories, email
+`6759885+hyperpolymath@users.noreply.github.com`. Do not include credentials
+or other secrets in an unencrypted message.
 
 | | |
 |---|---|
 | **Email** | 6759885+hyperpolymath@users.noreply.github.com |
-| **PGP Key** | [Download Public Key]({{PGP_KEY_URL}}) |
-| **Fingerprint** | `[PGP fingerprint not set]` |
+| **PGP Key** | Not currently published |
+| **Fingerprint** | Not currently published |
 
 ```bash
-# Import our PGP key
-curl -sSL {{PGP_KEY_URL}} | gpg --import
+# No project PGP key is currently published.
 
 # Verify fingerprint
-gpg --fingerprint 6759885+hyperpolymath@users.noreply.github.com
+# Use GitHub Security Advisories for confidential reports.
 
 # Encrypt your report
-gpg --armor --encrypt --recipient 6759885+hyperpolymath@users.noreply.github.com report.txt
+# Do not send credentials or secrets by email.
 ```
 
 > **⚠️ Important:** Do not report security vulnerabilities through public GitHub issues, pull requests, discussions, or social media.
@@ -374,7 +367,7 @@ When using ZeroProb.Jl, we recommend:
 
 ## Additional Resources
 
-- [Our PGP Public Key]({{PGP_KEY_URL}})
+- [GitHub Security Advisories](https://github.com/hyperpolymath/ZeroProb.jl/security/advisories)
 - [Security Advisories](https://github.com/hyperpolymath/ZeroProb.jl/security/advisories)
 - [Changelog](CHANGELOG.md)
 - [Contributing Guidelines](CONTRIBUTING.md)
