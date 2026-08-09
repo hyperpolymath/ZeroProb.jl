@@ -11,6 +11,9 @@ project = "ZeroProb.jl"
 version = "0.1.0"
 last-updated = "2026-06-14"
 status = "active"
+wiki = "docs/berrywiki/"
+wiki-pages = 16
+wiki-tool = "metadatastician/berrywiki"
 
 [project-context]
 name = "ZeroProb.jl"
@@ -42,6 +45,11 @@ issues = [
 [maintenance-status]
 last-run-utc = "2026-06-14T00:00:00Z"
 last-result = "unknown"  # unknown | pass | warn | fail — no Julia toolchain locally (installer is proxy-blocked); verification is via the repo's own multi-platform CI on the PR
+
+[coprocessor-documentation]
+human-index = "docs/berrywiki/Home.md"
+machine-index = "docs/berrywiki/Machine-Index.md"
+scope = "explicit TPU-style simulation adapter and refusal semantics"
 # 2026-06-14 conformance pass — closes the full 2026-06-13 estate wave that
 # ZeroProb.jl missed (not just governance metadata):
 #   * bot_directives trio (hypatia / gitbot-fleet / git-private-farm) + flat
