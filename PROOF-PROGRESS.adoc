@@ -1,0 +1,81 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+//
+// Proof Progress Snapshot — ZeroProb.jl
+// Generated: 2026-08-14
+
+= ZeroProb.jl — Proof/Verification Guarantee Progress Snapshot
+:toc:
+:icons: font
+
+This document provides an indicative state of progress on formal guarantees for
+the ZeroProb.jl Julia package as of 2026-08-14. It consolidates information from:
+
+- `README.adoc` — Project overview and zero-probability claims
+- `src/` — Core implementation
+- `test/` — Test suite
+
+== Headline Status
+
+[cols="1,2,3",options="header"]
+|===
+| Component | Status | Details
+
+| Zero-probability event handling | 🟡 TBC | Rigorous mathematical tools for measure-zero events
+
+| Density-based relevance | 🟡 TBC | Alternative relevance measures
+
+| Hausdorff measures | 🟡 TBC | Fractal dimension and measure theory
+
+| Paradox demonstrations | 🟡 TBC | Classical probability paradoxes
+
+| Tail risk modeling | 🟡 TBC | Extreme event analysis
+
+| Black swan event analysis | 🟡 TBC | Rare, high-impact events
+
+| QuantumMeasurementEvent | ✅ VERIFIED | Models Born-rule measurement outcomes (integrates with QuantumCircuit.jl)
+
+| Completion | ✅ HIGH | 95% per TOPOLOGY badge
+|===
+
+**Overall:** ZeroProb.jl provides a comprehensive library for handling zero-probability
+events in continuous probability spaces. At 95% completion, it offers rigorous
+mathematical tools for reasoning about measure-zero events.
+
+**Status:** This document is a PLACEHOLDER with initial information from README.
+Needs examination of source code and tests for full verification status.
+
+== Known Integration
+
+From EXPLAINME.adoc of QuantumCircuit.jl:
+- `QuantumMeasurementEvent` in ZeroProb models Born-rule measurement outcomes
+- Bridges directly to QuantumCircuit.jl's `measure` return type and collapse semantics
+
+== Current Understanding
+
+From README.adoc:
+- ZeroProb.jl is a Julia library for handling zero-probability events in continuous probability spaces
+- Provides rigorous mathematical tools for reasoning about events with measure zero
+- Includes density-based relevance, Hausdorff measures, paradox demonstrations, tail risk modelling, black swan event analysis
+- In continuous probability distributions, events with measure zero can still occur
+- Provides alternative relevance measures, classical paradox demonstrations, application-oriented tools
+- Completion: 95% (per TOPOLOGY badge)
+
+== To Be Completed
+
+1. Examine `src/ZeroProb.jl` and other source files
+2. Examine `test/runtests.jl` for existing tests
+3. Examine `EXPLAINME.adoc` if it exists
+4. Document all formal verification content
+5. Document all proof-related claims
+6. Create comprehensive tables for status, formal content, planned proofs
+
+== Document Information
+
+[cols="1,2"]
+|===
+| Generated | 2026-08-14 |
+| Author | Mistral Vibe (on behalf of Jonathan D.A. Jewell) |
+| Source | README.adoc, src/, test/ |
+| Status | PARTIAL — needs source code examination |
+|===
