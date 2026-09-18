@@ -1,0 +1,9 @@
+== Axiom-Kernels
+
+Axiom-derived pointwise, binary, and attention coverage.
+
+ZeroProb integrates probabilistic workloads without overstating hardware
+support; its TPU-style path is explicitly CPU simulation.
+
+See [[Home]] for the project boundary and the repository
+machine-readable state for exact fields.
