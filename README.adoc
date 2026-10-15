@@ -309,7 +309,13 @@ If you use ZeroProb.jl in research, please cite:
 == Applications in practice
 
 The worked case is permutation testing, as in MetaManifold's PERMANOVA
-integration: for `B` permutations the smallest attainable p-value is the
+integration (the theorems:
+link:https://github.com/hyperpolymath/MetaManifold-WebUI/blob/7d5e9a4/proofs/agda/MetaManifold/Permanova.agda[proofs/agda/MetaManifold/Permanova.agda],
+pinned on the fork's `main` at 7d5e9a4 and proposed upstream as
+link:https://github.com/JoshuaJewell/MetaManifold-WebUI/pull/55[PR #55],
+with the Julia oracle at
+link:https://github.com/hyperpolymath/MetaManifold-WebUI/blob/7d5e9a4/test/unit/test_permanova.jl[test/unit/test_permanova.jl]):
+for `B` permutations the smallest attainable p-value is the
 *floor* `1/(B+1)` -- attained exactly when no permutation reaches the
 observed statistic -- and the proved theorems pin that floor. What ZeroProb
 adds in practice is the honest language around it: a p-value at the floor is
